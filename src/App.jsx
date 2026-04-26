@@ -328,11 +328,13 @@ const pages = [
             'Section ko full screen banane ke liye h-screen aur w-full use karo.',
             'Background color class se section visually alag dikhega.',
             'Multiple sections bana ke landing page style layout create karo.',
+            'Last me footer add karo for copyright, links, ya contact details.',
           ],
           commands: [
             "<div className='h-screen w-full bg-blue-900'>Section1</div>",
             "<div className='h-screen w-full bg-slate-800'>Section2</div>",
             "<div className='h-screen w-full bg-emerald-700'>Section3</div>",
+            "<footer className='w-full bg-black text-white text-center py-4'>Footer</footer>",
           ],
           tailwindPageTable: [
             {
@@ -352,6 +354,13 @@ const pages = [
               utility: 'h-screen w-full bg-emerald-700',
               code: "<div className='h-screen w-full bg-emerald-700'>Section3</div>",
               explain: 'Final section for call-to-action area.',
+            },
+            {
+              section: 'Footer',
+              utility: 'w-full bg-black text-white text-center py-4',
+              code:
+                "<footer className='w-full bg-black text-white text-center py-4'>Footer</footer>",
+              explain: 'Bottom area for copyright, quick links, or contact info.',
             },
           ],
         },
@@ -406,6 +415,50 @@ const pages = [
             'cd my-react-web',
             'npm install',
             'npm run dev',
+          ],
+          importantNotesTable: [
+            {
+              note: 'Keep clean folder structure from Day 1',
+              why: 'Random files later confusion create karte hain.',
+              action:
+                'Start with folders like components, pages, hooks, utils and assets. Feature-wise grouping karo.',
+            },
+            {
+              note: 'Use small reusable components',
+              why: 'Large component me bugs trace karna hard hota hai.',
+              action:
+                '200+ line component ko split karo. Repeated UI ko separate component banao.',
+            },
+            {
+              note: 'Always use meaningful variable names',
+              why: 'Poor naming se logic samajhne me errors badhte hain.',
+              action:
+                'data, temp, x jaisi names avoid karo. clear names use karo: userList, totalPrice, isLoading.',
+            },
+            {
+              note: 'Use strict lint + format setup',
+              why: 'Common mistakes early catch ho jati hain.',
+              action:
+                'ESLint + Prettier enable karo. Save pe format aur fix use karo for consistent code.',
+            },
+            {
+              note: 'Handle null and loading states always',
+              why: 'Most runtime crashes undefined/null access ki wajah se aate hain.',
+              action:
+                'Render guards use karo: if loading, if error, optional chaining and fallback values.',
+            },
+            {
+              note: 'Avoid direct state mutation',
+              why: 'UI updates inconsistent ho jati hain aur hidden bugs aate hain.',
+              action:
+                'setState ya updater function use karo. Arrays/objects ke liye spread or map pattern use karo.',
+            },
+            {
+              note: 'Commit small and test frequently',
+              why: 'Big untested changes rollback karna difficult hota hai.',
+              action:
+                'Feature complete hone ka wait mat karo. Small commits and quick local testing habit banao.',
+            },
           ],
         },
       },
@@ -870,6 +923,32 @@ const DocumentViewer = ({ document }) => {
                       </button>
                     </td>
                     <td>{row.explain}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
+
+      {document.importantNotesTable?.length ? (
+        <>
+          <h3>Important Notes for Better Code (Hinglish)</h3>
+          <div className="table-wrap">
+            <table className="doc-table">
+              <thead>
+                <tr>
+                  <th>Important Note</th>
+                  <th>Why this matters</th>
+                  <th>Practical Trick</th>
+                </tr>
+              </thead>
+              <tbody>
+                {document.importantNotesTable.map((row) => (
+                  <tr key={row.note}>
+                    <td>{row.note}</td>
+                    <td>{row.why}</td>
+                    <td>{row.action}</td>
                   </tr>
                 ))}
               </tbody>

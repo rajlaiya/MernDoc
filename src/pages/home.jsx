@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const HomePage = () => {
   return (
     <div className="home-landing">
@@ -8,11 +10,32 @@ const HomePage = () => {
           MernDoc helps you move from setup to production with clean documentation for React,
           Next.js, Vue, and CSS best practices.
         </p>
+        <div className="hero-cta-row">
+          <Link to="/reactjs" className="get-started-btn">
+            Get Started
+          </Link>
+          <p className="cta-note">Start with React guide, then explore Next.js, Vue, and CSS.</p>
+        </div>
         <div className="hero-actions">
           <span className="hero-chip">Project Setup</span>
           <span className="hero-chip">UI Docs</span>
           <span className="hero-chip">Quick References</span>
         </div>
+      </section>
+
+      <section className="home-stats">
+        <article>
+          <h3>100+</h3>
+          <p>Action-oriented documentation blocks</p>
+        </article>
+        <article>
+          <h3>5</h3>
+          <p>Learning tracks: Home, CSS, React, Next.js, Vue</p>
+        </article>
+        <article>
+          <h3>Beginner First</h3>
+          <p>Hinglish notes with practical code snippets</p>
+        </article>
       </section>
 
       <section className="feature-grid">
