@@ -536,17 +536,62 @@ const pages = [
         id: 'ui-component-material-web',
         label: 'UI Component Material Web',
         document: {
-          title: 'UI Component Material Web',
-          intro: 'Material UI provides ready-made React components for faster UI development.',
+          title: 'Free + Open-Source Tailwind UI Components (Hinglish)',
+          intro:
+            'Yeh libraries beginner-friendly hain aur inme free/open-source components milte hain jo copy-paste karke quickly UI build kar sakte ho.',
           steps: [
-            'Install Material UI dependencies.',
-            'Import components like Button, Card, and TextField.',
-            'Customize theme to match your app branding.',
+            'Component copy karne se pehle project me Tailwind setup confirm karo.',
+            'Reusable sections (Navbar, Hero, Card, CTA, Footer) ko component-wise break karo.',
+            'Copy ke baad class names simplify karo so code maintain karna easy ho.',
           ],
           commands: [
-            'npm install @mui/material @emotion/react @emotion/styled',
-            'import Button from "@mui/material/Button"',
-            '<Button variant="contained">Save</Button>',
+            'Tip: hamesha docs ke free section se hi components pick karo',
+            'Tip: copied code me unused classes remove karo',
+            'Tip: same color/spacing tokens use karo for consistent design',
+          ],
+          uiLibraryTable: [
+            {
+              name: 'HyperUI',
+              bestComponents: 'Navbar, Hero Sections, Auth Forms, Product Cards, CTA Blocks',
+              features:
+                'Pure Tailwind markup deta hai, copy-paste quick hai, startup landing pages ke liye best.',
+              link: 'https://www.hyperui.dev',
+            },
+            {
+              name: 'daisyUI',
+              bestComponents: 'Buttons, Modals, Dropdowns, Alerts, Tabs, Navbar',
+              features:
+                'Tailwind plugin-based component classes milti hain; themes ready milte hain aur beginner ke liye super fast.',
+              link: 'https://daisyui.com',
+            },
+            {
+              name: 'TailGrids',
+              bestComponents: 'Hero Sections, Pricing Blocks, Feature Grids, Testimonials',
+              features:
+                'Ready marketing blocks provide karta hai; free components se landing pages quickly assemble ho jate hain.',
+              link: 'https://tailgrids.com/components',
+            },
+            {
+              name: 'Sailboat UI',
+              bestComponents: 'Cards, Buttons, Inputs, Avatars, Badges, Nav Patterns',
+              features:
+                'Lightweight aur clean Tailwind components deta hai; design minimal and easy-to-edit hota hai.',
+              link: 'https://sailboatui.com',
+            },
+            {
+              name: 'Wind UI',
+              bestComponents: 'Form Controls, Buttons, Cards, Empty States, Dashboard Blocks',
+              features:
+                'Component snippets simple structure me milte hain; beginners ko class flow samajhne me help milti hai.',
+              link: 'https://wind-ui.com',
+            },
+            {
+              name: 'Magic UI',
+              bestComponents: 'Animated Buttons, Spotlight Effects, Marquee, Bento Grids',
+              features:
+                'Modern effect-based UI snippets milte hain; portfolio aur SaaS pages ko premium look dene me useful.',
+              link: 'https://magicui.design',
+            },
           ],
         },
       },
@@ -738,9 +783,18 @@ const pages = [
   },
 ]
 
-const DocumentViewer = ({ document }) => {
+const DocumentViewer = ({ document, pageLabel }) => {
   const [copiedExtension, setCopiedExtension] = useState('')
   const [copiedCode, setCopiedCode] = useState('')
+
+  const extensionThemeClass =
+    pageLabel === 'Vue'
+      ? 'ext-theme-vue'
+      : pageLabel === 'React JS'
+        ? 'ext-theme-react'
+        : pageLabel === 'Next JS'
+          ? 'ext-theme-next'
+          : ''
 
   const handleCopyExtension = async (name) => {
     try {
@@ -957,10 +1011,42 @@ const DocumentViewer = ({ document }) => {
         </>
       ) : null}
 
+      {document.uiLibraryTable?.length ? (
+        <>
+          <h3>Free Tailwind Component Libraries (Hinglish)</h3>
+          <div className="table-wrap">
+            <table className="doc-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Best Component Names</th>
+                  <th>UI Features</th>
+                  <th>Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                {document.uiLibraryTable.map((row) => (
+                  <tr key={row.name}>
+                    <td>{row.name}</td>
+                    <td>{row.bestComponents}</td>
+                    <td>{row.features}</td>
+                    <td>
+                      <a href={row.link} target="_blank" rel="noreferrer">
+                        {row.link}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
+
       {document.extensionList?.length ? (
         <>
           <h3>Important Extensions (No AI)</h3>
-          <div className="extension-grid">
+          <div className={`extension-grid ${extensionThemeClass}`}>
             {document.extensionList.map((item) => (
               <section key={item.name} className="extension-card">
                 <div className="extension-title-row">
@@ -1016,7 +1102,7 @@ const PageShell = ({
         />
         <main className="content-area">
           <h1>{title}</h1>
-          <DocumentViewer document={activeDoc?.document} />
+          <DocumentViewer document={activeDoc?.document} pageLabel={pageLabel} />
           <section className="page-panel">{children}</section>
         </main>
       </div>
