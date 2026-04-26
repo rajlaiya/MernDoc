@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import CssPage from './pages/css'
@@ -783,6 +783,47 @@ const pages = [
   },
 ]
 
+const defaultSeo = {
+  title: 'MernDoc | Practical Frontend Guides',
+  description:
+    'MernDoc provides practical documentation for React, Next.js, Vue, and CSS with clear steps and copy-ready examples.',
+}
+
+const pageSeoByPath = {
+  '/home': {
+    title: 'MernDoc Home | Frontend Documentation Hub',
+    description:
+      'Start here to explore practical documentation for React, Next.js, Vue, and CSS in MernDoc.',
+  },
+  '/css': {
+    title: 'CSS Guide | MernDoc',
+    description:
+      'Learn practical CSS concepts, responsive patterns, and style workflows with beginner-friendly examples.',
+  },
+  '/reactjs': {
+    title: 'React JS Guide | MernDoc',
+    description:
+      'Follow React setup and workflow documentation including tooling, UI libraries, and practical usage notes.',
+  },
+  '/nextjs': {
+    title: 'Next.js Guide | MernDoc',
+    description:
+      'Read Next.js setup and project guidance with practical recommendations for app development workflows.',
+  },
+  '/vue': {
+    title: 'Vue Guide | MernDoc',
+    description:
+      'Explore practical Vue documentation including setup, styling options, and UI component resources.',
+  },
+}
+
+const setMetaContent = (selector, content) => {
+  const element = document.querySelector(selector)
+  if (element) {
+    element.setAttribute('content', content)
+  }
+}
+
 const DocumentViewer = ({ document, pageLabel }) => {
   const [copiedExtension, setCopiedExtension] = useState('')
   const [copiedCode, setCopiedCode] = useState('')
@@ -1118,6 +1159,26 @@ const App = () => {
     '/nextjs': 'create-next-web',
     '/vue': 'create-vue-web',
   })
+  const location = useLocation()
+
+  useEffect(() => {
+    const seo = pageSeoByPath[location.pathname] ?? defaultSeo
+    const baseUrl = window.location.origin
+    const canonicalUrl = `${baseUrl}${location.pathname}`
+
+    document.title = seo.title
+    setMetaContent('meta[name="description"]', seo.description)
+    setMetaContent('meta[property="og:title"]', seo.title)
+    setMetaContent('meta[property="og:description"]', seo.description)
+    setMetaContent('meta[property="og:url"]', canonicalUrl)
+    setMetaContent('meta[name="twitter:title"]', seo.title)
+    setMetaContent('meta[name="twitter:description"]', seo.description)
+
+    const canonical = document.querySelector('link[rel="canonical"]')
+    if (canonical) {
+      canonical.setAttribute('href', canonicalUrl)
+    }
+  }, [location.pathname])
 
   const handleDocSelect = (pagePath, docId) => {
     setActiveDocs((prevState) => ({
