@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import CssPage from './pages/css'
 import HomePage from './pages/home'
+import BackendPage from './pages/backend'
 import NextJsPage from './pages/nextjs'
 import ReactJsPage from './pages/reactjs'
 import VuePage from './pages/vue'
@@ -781,6 +782,122 @@ const pages = [
       },
     ],
   },
+  {
+    path: '/backend',
+    label: 'Backend',
+    title: 'Backend Docs',
+    element: <BackendPage />,
+    sidebarMode: 'button-docs',
+    docs: [
+      {
+        id: 'create-express-api',
+        label: 'Create Express API',
+        document: {
+          title: 'Create Express API',
+          intro: 'Bootstrap a simple Node.js + Express backend API with a clean starting point.',
+          steps: [
+            'Create a new folder and initialize npm.',
+            'Install Express and a dev runner like nodemon.',
+            'Create a basic server entry file and start the dev server.',
+          ],
+          commands: [
+            'mkdir backend-api && cd backend-api',
+            'npm init -y',
+            'npm install express',
+            'npm install -D nodemon',
+            'node server.js',
+          ],
+        },
+      },
+      {
+        id: 'backend-env-config',
+        label: 'Environment Setup',
+        document: {
+          title: 'Environment Setup',
+          intro: 'Use dotenv so secrets and configs stay out of source code.',
+          steps: [
+            'Install dotenv and create a .env file.',
+            'Load environment variables at the top of your entry file.',
+            'Reference variables via process.env in config and routes.',
+          ],
+          commands: [
+            'npm install dotenv',
+            '.env\nPORT=5000\nMONGO_URI=your_mongo_uri',
+            'server.js\nimport dotenv from "dotenv"\ndotenv.config()',
+          ],
+        },
+      },
+      {
+        id: 'backend-mongodb',
+        label: 'MongoDB Connection',
+        document: {
+          title: 'MongoDB Connection',
+          intro: 'Connect Express to MongoDB using Mongoose with a single reusable function.',
+          steps: [
+            'Install mongoose and create a db connection helper.',
+            'Call the connect function before starting the server.',
+            'Handle connection errors with try/catch.',
+          ],
+          commands: [
+            'npm install mongoose',
+            'db.js\nimport mongoose from "mongoose"\nexport const connectDb = async () => {\n  await mongoose.connect(process.env.MONGO_URI)\n}',
+            'server.js\nimport { connectDb } from "./db.js"\nconnectDb()',
+          ],
+        },
+      },
+      {
+        id: 'backend-auth-jwt',
+        label: 'JWT Auth Basics',
+        document: {
+          title: 'JWT Auth Basics',
+          intro: 'Use hashed passwords and signed JWT tokens for basic authentication.',
+          steps: [
+            'Install jsonwebtoken and bcryptjs.',
+            'Hash passwords before saving users.',
+            'Create a token on login and verify it in middleware.',
+          ],
+          commands: [
+            'npm install jsonwebtoken bcryptjs',
+            'const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })',
+            'const isMatch = await bcrypt.compare(password, user.password)',
+          ],
+        },
+      },
+      {
+        id: 'backend-error-handling',
+        label: 'Error Handling',
+        document: {
+          title: 'Error Handling in Express',
+          intro: 'Centralize errors so routes stay clean and consistent.',
+          steps: [
+            'Create a global error handler middleware.',
+            'Call next(error) from routes or controllers.',
+            'Return structured error responses for API clients.',
+          ],
+          commands: [
+            'app.use((err, req, res, next) => {\n  res.status(err.status || 500).json({ message: err.message || "Server error" })\n})',
+            'next(new Error("Invalid request"))',
+          ],
+        },
+      },
+      {
+        id: 'backend-structure',
+        label: 'Folder Structure',
+        document: {
+          title: 'Backend Folder Structure',
+          intro: 'Use a consistent structure so teams can navigate the API quickly.',
+          steps: [
+            'Keep routes, controllers, models, and middleware separated.',
+            'Create a config folder for db and env helpers.',
+            'Add a utils folder for reusable helpers.',
+          ],
+          commands: [
+            'src/\n  controllers/\n  routes/\n  models/\n  middleware/\n  config/\n  utils/\n  server.js',
+          ],
+        },
+      },
+    ],
+  },
 ]
 
 const defaultSeo = {
@@ -814,6 +931,11 @@ const pageSeoByPath = {
     title: 'Vue Guide | MernDoc',
     description:
       'Explore practical Vue documentation including setup, styling options, and UI component resources.',
+  },
+  '/backend': {
+    title: 'Backend Guide | MernDoc',
+    description:
+      'Learn backend fundamentals with Node.js, Express, MongoDB, authentication, and error handling guidance.',
   },
 }
 
@@ -1158,6 +1280,7 @@ const App = () => {
     '/reactjs': 'create-react-web',
     '/nextjs': 'create-next-web',
     '/vue': 'create-vue-web',
+    '/backend': 'create-express-api',
   })
   const location = useLocation()
 

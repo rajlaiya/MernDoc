@@ -8,13 +8,13 @@ const HomePage = () => {
         <h2>Build Better Frontend Projects, Faster</h2>
         <p>
           MernDoc helps you move from setup to production with clean documentation for React,
-          Next.js, Vue, and CSS best practices.
+          Next.js, Vue, CSS, and backend best practices.
         </p>
         <div className="hero-cta-row">
           <Link to="/reactjs" className="get-started-btn">
             Get Started
           </Link>
-          <p className="cta-note">Start with React guide, then explore Next.js, Vue, and CSS.</p>
+          <p className="cta-note">Start with React guide, then explore Next.js, Vue, CSS, and Backend.</p>
         </div>
         <div className="hero-actions">
           <span className="hero-chip">Project Setup</span>
@@ -29,8 +29,8 @@ const HomePage = () => {
           <p>Action-oriented documentation blocks</p>
         </article>
         <article>
-          <h3>5</h3>
-          <p>Learning tracks: Home, CSS, React, Next.js, Vue</p>
+          <h3>6</h3>
+          <p>Learning tracks: Home, CSS, React, Next.js, Vue, Backend</p>
         </article>
         <article>
           <h3>Beginner First</h3>
