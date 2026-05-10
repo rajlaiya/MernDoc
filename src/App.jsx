@@ -790,109 +790,197 @@ const pages = [
     sidebarMode: 'button-docs',
     docs: [
       {
-        id: 'create-express-api',
-        label: 'Create Express API',
-        document: {
-          title: 'Create Express API',
-          intro: 'Bootstrap a simple Node.js + Express backend API with a clean starting point.',
-          steps: [
-            'Create a new folder and initialize npm.',
-            'Install Express and a dev runner like nodemon.',
-            'Create a basic server entry file and start the dev server.',
-          ],
-          commands: [
-            'mkdir backend-api && cd backend-api',
-            'npm init -y',
-            'npm install express',
-            'npm install -D nodemon',
-            'node server.js',
-          ],
-        },
-      },
-      {
-        id: 'backend-env-config',
+        id: 'backend-env-setup',
         label: 'Environment Setup',
         document: {
-          title: 'Environment Setup',
-          intro: 'Use dotenv so secrets and configs stay out of source code.',
+          title: 'Environment Setup (Backend Start)',
+          intro:
+            'Backend start karne ke liye npm init, packages, aur MongoDB setup complete karo. Ye steps follow karke setup 10-15 min me ready ho jata hai.',
           steps: [
-            'Install dotenv and create a .env file.',
-            'Load environment variables at the top of your entry file.',
-            'Reference variables via process.env in config and routes.',
+            'Project folder me jao aur npm init run karo.',
+            'Express + Mongoose dono ko ek sath install karo.',
+            'MongoDB website par login/signup karo (mongodb.com).',
+            'Atlas me naya project banao aur new cluster create karo (free tier).',
+            'Database Access me naya user banao (username + password).',
+            'Network Access me IP allowlist add karo: 0.0.0.0/0.',
+            'Clusters tab se Connect > Connect your application > URI copy karo.',
+            'Compass install karo (MongoDB Compass GUI) aur URI se connect karo.',
+            'Postman open karo aur API routes test karo (POST/GET/DELETE/PATCH).',
+            'Nodemon se server run karo (server.js).',
           ],
           commands: [
-            'npm install dotenv',
-            '.env\nPORT=5000\nMONGO_URI=your_mongo_uri',
-            'server.js\nimport dotenv from "dotenv"\ndotenv.config()',
+            'npm init -y // for package.json file',
+            'npm i express mongoose // dono ko ek sath install',
+            'npm install',
+            'MongoDB Atlas: Project > Build a Database > Create Cluster',
+            'Network Access: Add IP Address -> 0.0.0.0/0 (Allow from anywhere)',
+            'Compass: paste mongodb+srv URI and Connect',
+            'Postman POST: http://localhost:3000/notes + Body (JSON)',
+            'Postman GET: http://localhost:3000/notes',
+            'Postman DELETE: http://localhost:3000/notes/:id',
+            'Postman PATCH: http://localhost:3000/notes/:id + Body (JSON)',
+            'npx nodemon server.js // server ko start karne k liye',
           ],
         },
       },
       {
-        id: 'backend-mongodb',
-        label: 'MongoDB Connection',
+        id: 'backend-connect-frontend',
+        label: 'Connect with Frontend',
         document: {
-          title: 'MongoDB Connection',
-          intro: 'Connect Express to MongoDB using Mongoose with a single reusable function.',
+          title: 'Connect Backend with React Frontend',
+          intro:
+            'Backend ko React se connect karne ke liye API base URL, CORS, aur fetch/axios ka basic flow set karo.',
           steps: [
-            'Install mongoose and create a db connection helper.',
-            'Call the connect function before starting the server.',
-            'Handle connection errors with try/catch.',
+            'Backend me CORS allow karo taki React dev server se request ja sake.',
+            'React app me API base URL set karo (Vite env prefer karo).',
+            'Pehle simple GET se connection test karo.',
+            'POST/DELETE/PATCH call same base URL follow karte hain.',
+            'Production me base URL ko env se replace karo.',
           ],
           commands: [
-            'npm install mongoose',
-            'db.js\nimport mongoose from "mongoose"\nexport const connectDb = async () => {\n  await mongoose.connect(process.env.MONGO_URI)\n}',
-            'server.js\nimport { connectDb } from "./db.js"\nconnectDb()',
+            'Backend: npm i cors',
+            'app.js\nconst cors = require("cors");\napp.use(cors());',
+            'Frontend (Vite) .env\nVITE_API_URL=http://localhost:3000',
+            'React fetch\nfetch(`${import.meta.env.VITE_API_URL}/notes`)\n  .then((res) => res.json())\n  .then((data) => console.log(data));',
+            'POST example\nfetch(`${import.meta.env.VITE_API_URL}/notes`, {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify({ title: "Test", description: "Demo" }),\n});',
+          ],
+          promptLines: [
+            'Connect the React client to the API using a single base URL for all requests.',
+            'Enable CORS on the backend to allow browser requests from the frontend.',
+            'Validate connectivity with a simple GET call before adding complex flows.',
+            'Keep API endpoints configurable through environment variables.',
           ],
         },
       },
       {
-        id: 'backend-auth-jwt',
-        label: 'JWT Auth Basics',
-        document: {
-          title: 'JWT Auth Basics',
-          intro: 'Use hashed passwords and signed JWT tokens for basic authentication.',
-          steps: [
-            'Install jsonwebtoken and bcryptjs.',
-            'Hash passwords before saving users.',
-            'Create a token on login and verify it in middleware.',
-          ],
-          commands: [
-            'npm install jsonwebtoken bcryptjs',
-            'const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })',
-            'const isMatch = await bcrypt.compare(password, user.password)',
-          ],
-        },
-      },
-      {
-        id: 'backend-error-handling',
-        label: 'Error Handling',
-        document: {
-          title: 'Error Handling in Express',
-          intro: 'Centralize errors so routes stay clean and consistent.',
-          steps: [
-            'Create a global error handler middleware.',
-            'Call next(error) from routes or controllers.',
-            'Return structured error responses for API clients.',
-          ],
-          commands: [
-            'app.use((err, req, res, next) => {\n  res.status(err.status || 500).json({ message: err.message || "Server error" })\n})',
-            'next(new Error("Invalid request"))',
-          ],
-        },
-      },
-      {
-        id: 'backend-structure',
+        id: 'backend-folder-structure',
         label: 'Folder Structure',
         document: {
           title: 'Backend Folder Structure',
-          intro: 'Use a consistent structure so teams can navigate the API quickly.',
+          intro: 'Clean structure se files locate karna easy hota hai aur scaling simple hoti hai.',
           steps: [
-            'Keep routes, controllers, models, and middleware separated.',
-            'Create a config folder for db and env helpers.',
-            'Add a utils folder for reusable helpers.',
+            'Root par server.js rakho.',
+            'App logic ko src/app.js me rakho.',
+            'DB, models, routes, controllers ko alag folders me rakho.',
           ],
           commands: [
-            'src/\n  controllers/\n  routes/\n  models/\n  middleware/\n  config/\n  utils/\n  server.js',
+            'backend-api/\n  server.js\n  src/\n    app.js\n    db/\n      db.js\n    models/\n      note.model.js\n    routes/\n      note.routes.js\n    controllers/\n      note.controller.js\n    middleware/\n      auth.middleware.js',
+          ],
+        },
+      },
+      {
+        id: 'backend-common-files',
+        label: 'Similar Code (Files)',
+        document: {
+          title: 'Similar Code for Common Files',
+          intro:
+            'Ye same code templates har backend project me repeat hote hain. Is pattern ko follow karo to API fast setup ho jati hai.',
+          steps: [
+            'Model + DB + App + Server ye 4 files ka flow same hota hai.',
+            'Model me schema define karo, app.js me routes likho.',
+            'db.js me Mongo connect karo, server.js me app start karo.',
+            'Har website ka CRUD logic same hota hai: POST, GET, DELETE, PATCH.',
+            'Ek route banaya, usi pattern se baki routes ban jate hain.',
+          ],
+          commands: [
+            'POST /notes = create new note (body se data lo)',
+            'GET /notes = all notes fetch',
+            'DELETE /notes/:id = specific note delete',
+            'PATCH /notes/:id = description update',
+            'Same pattern users, products, posts, comments sab me use hota hai',
+          ],
+          importantNotesTable: [
+            {
+              note: 'Route name short rakho',
+              why: 'Short URLs easy to remember aur test karne me fast hote hain.',
+              action: 'Use /notes, /users, /products jaise paths.',
+            },
+            {
+              note: 'POST me hamesha body parse karo',
+              why: 'express.json() ke bina req.body undefined aata hai.',
+              action: 'app.use(express.json()) top pe add karo.',
+            },
+            {
+              note: 'DB connect fail ho to server mat start karo',
+              why: 'API crash ya blank response milta hai.',
+              action: 'connectDB() ko server start se pehle call karo.',
+            },
+            {
+              note: 'Id ke liye params use karo',
+              why: 'Specific record delete/update karna easy hota hai.',
+              action: 'Use /notes/:id and req.params.id.',
+            },
+            {
+              note: 'Same CRUD logic sab projects me reuse hota hai',
+              why: 'Pattern samajh aane se new APIs fast banti hain.',
+              action: 'Model/route copy karo aur schema + route name replace karo.',
+            },
+          ],
+          fileSnippets: [
+            {
+              title: 'src/models/note.model.js',
+              code:
+                'const mongoose = require("mongoose");\n\nconst noteSchema = new mongoose.Schema({\n  title: String,\n  description: String,\n});\n\nconst noteModel = mongoose.model("note", noteSchema);\n\nmodule.exports = noteModel; // noteModel ko export kar diya taki app.js me use kar sake\n',
+            },
+            {
+              title: 'src/app.js',
+              code:
+                'const express = require("express");\nconst noteModel = require("./models/note.model");\n\nconst app = express(); // express ko initialize kar diya\napp.use(express.json()); // ye line isliye use karte hai taki hum req.body me data ko access kar sake\n\n/*\nPOST ka use karke hum note create karenge\nGET ka use karke hum sare notes ko fetch karenge\nDELETE ka use karke hum note ko delete karenge\nPATCH ka use karke hum note ke description ko update karenge\n*/\n\napp.post("/notes", async (req, res) => {\n  const data = req.body;\n  await noteModel.create({\n    title: data.title,\n    description: data.description,\n  });\n  res.status(201).json({ message: "Note created successfully" });\n});\n\napp.get("/notes", async (req, res) => {\n  const notes = await noteModel.find(); // find aek array return krega jisme sare notes honge\n\n  /*\n  sirf find () NO CONDITION THEN ALL NODES RETURN KREGA\n\n  findOne = [{},{}] or [] return krega, jisme pehla note return hoga jo title test_title hoga\n\n  find = {} or null return krega, jisme sare notes honge jo title test_title hoga\n\n  */\n\n  res.status(200).json({\n    message: "Notes fetched successfully",\n    notes: notes,\n  });\n});\n\napp.delete("/notes/:id", async (req, res) => {\n  const id = req.params.id;\n  await noteModel.findOneAndDelete({ _id: id });\n\n  res.status(200).json({ message: "Note deleted successfully" });\n});\n\napp.patch("/notes/:id", async (req, res) => {\n  const id = req.params.id;\n  const description = req.body.description;\n\n  await noteModel.findOneAndUpdate({ _id: id }, { description: description });\n\n  res.status(200).json({ message: "Note updated successfully" });\n});\n\nmodule.exports = app; // app ko export kar diya taki server.js me use kar sake\n',
+            },
+            {
+              title: 'src/db/db.js',
+              code:
+                'const mongoose = require("mongoose");\n\nasync function connectDB() {\n  await mongoose.connect(\n    "mongodb+srv://yt:D0wBCv2XZpatMqOY@fiestbackend.lrzxghd.mongodb.net/halley",\n  );\n  console.log("Connected to Database");\n}\n\nmodule.exports = connectDB; // connectDB function ko export kar diya taki server.js me use kar sake\n',
+            },
+            {
+              title: 'server.js',
+              code:
+                'const app = require("./src/app");\nconst connectDB = require("./src/db/db");\n\nconnectDB();\n\napp.listen(3000, () => {\n  console.log(`Server is running on port 3000`);\n});\n',
+            },
+          ],
+        },
+      },
+      {
+        id: 'backend-step-guide',
+        label: 'Step-by-Step + Errors',
+        document: {
+          title: 'Backend Step-by-Step (with Common Errors)',
+          intro: 'Start se end tak basic flow follow karo, aur common errors ka fix bhi yahin milega.',
+          steps: [
+            'Project folder banao aur npm init run karo.',
+            'Express + Mongoose install karo.',
+            'Folder structure create karo (src, models, db).',
+            'app.js, db.js, note.model.js file add karo.',
+            'server.js me app + db connect karo.',
+            'Server start karo aur API test karo.',
+          ],
+          commands: [
+            'npm init -y',
+            'npm i express mongoose',
+            'mkdir src && mkdir src/models && mkdir src/db',
+            'node server.js',
+          ],
+          commonErrors: [
+            {
+              problem: 'Cannot find module "./models/note.model"',
+              reason: 'Wrong file path ya file name mismatch hota hai.',
+              fix: 'File ko src/models/note.model.js me rakho aur require path same rakho.',
+            },
+            {
+              problem: 'Error: Cannot find module "./src/app"',
+              reason: 'server.js me require path galat hai.',
+              fix: 'server.js me require("./src/app") use karo.',
+            },
+            {
+              problem: 'Command not found / server not starting',
+              reason: 'npx nodemon command me server.js ka spelling galat hai.',
+              fix: 'Use: npx nodemon server.js (no space, correct spelling).',
+            },
+            {
+              problem: 'TypeError: app.lisen is not a function',
+              reason: 'listen word me spelling mistake hota hai.',
+              fix: 'Use: app.listen(3000, () => { ... })',
+            },
           ],
         },
       },
@@ -987,20 +1075,55 @@ const DocumentViewer = ({ document, pageLabel }) => {
     <article className="doc-viewer">
       <h2>{document.title}</h2>
       <p>{document.intro}</p>
-      <h3>Steps</h3>
-      <ol>
-        {document.steps.map((step) => (
-          <li key={step}>{step}</li>
-        ))}
-      </ol>
-      <h3>Quick Snippets</h3>
-      <div className="snippet-grid">
-        {document.commands.map((command) => (
-          <pre key={command}>
-            <code>{command}</code>
-          </pre>
-        ))}
-      </div>
+      {document.steps?.length ? (
+        <>
+          <h3>Steps</h3>
+          <ol>
+            {document.steps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </>
+      ) : null}
+      {document.commands?.length ? (
+        <>
+          <h3>Quick Snippets</h3>
+          <div className="snippet-grid">
+            {document.commands.map((command) => (
+              <pre key={command}>
+                <code>{command}</code>
+              </pre>
+            ))}
+          </div>
+        </>
+      ) : null}
+
+      {document.fileSnippets?.length ? (
+        <>
+          <h3>Project File Code</h3>
+          <div className="file-snippet-grid">
+            {document.fileSnippets.map((snippet) => (
+              <section key={snippet.title} className="file-snippet">
+                <h4>{snippet.title}</h4>
+                <pre>
+                  <code>{snippet.code}</code>
+                </pre>
+              </section>
+            ))}
+          </div>
+        </>
+      ) : null}
+
+      {document.promptLines?.length ? (
+        <>
+          <h3>Professional Prompt Lines</h3>
+          <ul>
+            {document.promptLines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
 
       {document.websiteTable?.length ? (
         <>
@@ -1236,6 +1359,32 @@ const DocumentViewer = ({ document, pageLabel }) => {
           </div>
         </>
       ) : null}
+
+      {document.commonErrors?.length ? (
+        <>
+          <h3>Common Errors (Quick Fix)</h3>
+          <div className="table-wrap">
+            <table className="doc-table">
+              <thead>
+                <tr>
+                  <th>Problem</th>
+                  <th>Reason</th>
+                  <th>Fix</th>
+                </tr>
+              </thead>
+              <tbody>
+                {document.commonErrors.map((row) => (
+                  <tr key={row.problem}>
+                    <td>{row.problem}</td>
+                    <td>{row.reason}</td>
+                    <td>{row.fix}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
     </article>
   )
 }
@@ -1280,7 +1429,7 @@ const App = () => {
     '/reactjs': 'create-react-web',
     '/nextjs': 'create-next-web',
     '/vue': 'create-vue-web',
-    '/backend': 'create-express-api',
+    '/backend': 'backend-env-setup',
   })
   const location = useLocation()
 
