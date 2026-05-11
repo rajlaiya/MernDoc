@@ -8,6 +8,7 @@ import BackendPage from './pages/backend'
 import NextJsPage from './pages/nextjs'
 import ReactJsPage from './pages/reactjs'
 import VuePage from './pages/vue'
+import restApiPdf from './documents/REST-API.pdf'
 import './App.css'
 
 const vscodeExtensionsDocument = {
@@ -796,6 +797,11 @@ const pages = [
           title: 'Environment Setup (Backend Start)',
           intro:
             'Backend start karne ke liye npm init, packages, aur MongoDB setup complete karo. Ye steps follow karke setup 10-15 min me ready ho jata hai.',
+          download: {
+            label: 'Download REST API PDF',
+            href: restApiPdf,
+            filename: 'REST-API.pdf',
+          },
           steps: [
             'Project folder me jao aur npm init run karo.',
             'Express + Mongoose dono ko ek sath install karo.',
@@ -820,6 +826,45 @@ const pages = [
             'Postman DELETE: http://localhost:3000/notes/:id',
             'Postman PATCH: http://localhost:3000/notes/:id + Body (JSON)',
             'npx nodemon server.js // server ko start karne k liye',
+          ],
+        },
+      },
+      {
+        id: 'backend-image-upload',
+        label: 'Deal with Image',
+        document: {
+          title: 'Deal with Image (Multer + Cloud Storage)',
+          intro:
+            'Multer middleware se images ko handle karo aur cloud storage provider (ImageKit, Cloudinary, AWS S3) par upload karke URL generate karo.',
+          steps: [
+            'Multer install karo.',
+            'Postman me Body > form-data choose karo aur key type file set karo.',
+            'Route par multer middleware add karo: upload.single("image").',
+            'File buffer ko storage service me bhejo aur result URL save karo.',
+            'Cloud provider ke env vars .env me set karo.',
+          ],
+          commands: [
+            'npm i multer',
+            'npm i @imagekit/nodejs // optional for ImageKit storage',
+            'Postman: Body > form-data > key "image" (type: File) + key "title" (type: Text)',
+            'Middleware: upload.single("image") // multer middleware',
+          ],
+          fileSnippets: [
+            {
+              title: 'src/app.js',
+              code:
+                'const express = require("express");\nconst multer = require("multer");\nconst uploadFile = require("./src/services/storage.service");\n\nconst app = express();\napp.use(express.json());\n\nconst upload = multer({ storage: multer.memoryStorage() });\n\napp.post("/create-post", upload.single("image"), async (req, res) => {\n  console.log(req.body);\n  console.log(req.file);\n\n  const result = await uploadFile(req.file.buffer);\n  console.log(result);\n\n  res.status(201).json({ message: "File uploaded", data: result });\n});\n\nmodule.exports = app;\n',
+            },
+            {
+              title: 'src/services/storage.service.js',
+              code:
+                'const ImageKit = require("@imagekit/nodejs");\n\nconst imagekit = new ImageKit({\n  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,\n  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,\n  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,\n});\n\nasync function uploadFile(buffer) {\n  if (!process.env.IMAGEKIT_PRIVATE_KEY) {\n    throw new Error(\n      "ImageKit env vars missing: IMAGEKIT_PUBLIC_KEY, IMAGEKIT_PRIVATE_KEY, IMAGEKIT_URL_ENDPOINT",\n    );\n  }\n\n  const result = await imagekit.files.upload({\n    file: buffer,\n    fileName: "image.jpg",\n  });\n  return result;\n}\n\nmodule.exports = uploadFile;\n',
+            },
+          ],
+          promptLines: [
+            'Cloud storage providers image ko URL me convert karte hain: ImageKit, Cloudinary, AWS S3.',
+            'Memory storage small uploads ke liye convenient hai; large files ke liye disk or streaming use karo.',
+            'Upload success ke baad URL ko DB me save karo aur response me return karo.',
           ],
         },
       },
@@ -1075,6 +1120,17 @@ const DocumentViewer = ({ document, pageLabel }) => {
     <article className="doc-viewer">
       <h2>{document.title}</h2>
       <p>{document.intro}</p>
+      {document.download ? (
+        <div className="doc-download">
+          <a
+            className="doc-download-btn"
+            href={document.download.href}
+            download={document.download.filename}
+          >
+            {document.download.label}
+          </a>
+        </div>
+      ) : null}
       {document.steps?.length ? (
         <>
           <h3>Steps</h3>
