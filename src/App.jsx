@@ -244,11 +244,59 @@ const pages = [
             'Body text ke liye usually 16px se start karo.',
             'Heading sizes ko hierarchy me rakho: h1 > h2 > h3.',
             'Responsive design ke liye rem use karo taki scaling easy rahe.',
+            'Component ke andar em use karo taki parent ke hisab se scale ho.',
+            'Fluid sizing ke liye clamp use karo: min, preferred, max.',
           ],
           commands: [
             'body { font-size: 1rem; }',
             'h1 { font-size: 2.2rem; }',
             '@media (max-width: 768px) { h1 { font-size: 1.8rem; } }',
+            '.card { font-size: 0.95em; }',
+            'h1 { font-size: clamp(1.6rem, 2vw + 1rem, 2.6rem); }',
+          ],
+          relativeUnitsTable: [
+            {
+              unit: 'rem',
+              basedOn: 'Root font-size (html)',
+              use: 'Global scaling for text and spacing',
+              example: 'font-size: 1rem;'
+            },
+            {
+              unit: 'em',
+              basedOn: 'Parent element font-size',
+              use: 'Component-level scaling',
+              example: 'padding: 0.8em;'
+            },
+            {
+              unit: '%',
+              basedOn: 'Parent element size',
+              use: 'Relative width or text size',
+              example: 'font-size: 110%;'
+            },
+            {
+              unit: 'vw',
+              basedOn: 'Viewport width',
+              use: 'Fluid text sizing',
+              example: 'font-size: 2vw;'
+            },
+            {
+              unit: 'vh',
+              basedOn: 'Viewport height',
+              use: 'Full-height sections',
+              example: 'min-height: 100vh;'
+            },
+            {
+              unit: 'vmin',
+              basedOn: 'Smaller of vw or vh',
+              use: 'Consistent scaling on all screens',
+              example: 'font-size: 2vmin;'
+            },
+            {
+              unit: 'vmax',
+              basedOn: 'Larger of vw or vh',
+              use: 'Hero text on wide screens',
+              example: 'font-size: 2vmax;'
+            },
           ],
         },
       },
@@ -1469,6 +1517,34 @@ const DocumentViewer = ({ document, pageLabel }) => {
                     <td>{item.name}</td>
                     <td>{item.combo}</td>
                     <td>{item.use}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
+
+      {document.relativeUnitsTable?.length ? (
+        <>
+          <h3>Responsive Units (Quick Table)</h3>
+          <div className="table-wrap">
+            <table className="doc-table">
+              <thead>
+                <tr>
+                  <th>Unit</th>
+                  <th>Based On</th>
+                  <th>Best Use</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {document.relativeUnitsTable.map((row) => (
+                  <tr key={row.unit}>
+                    <td>{row.unit}</td>
+                    <td>{row.basedOn}</td>
+                    <td>{row.use}</td>
+                    <td>{row.example}</td>
                   </tr>
                 ))}
               </tbody>
