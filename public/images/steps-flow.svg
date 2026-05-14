@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220" role="img" aria-label="Step by step flow">
+  <rect width="900" height="220" fill="#f8fafc" />
+  <rect x="60" y="70" width="160" height="70" rx="12" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+  <text x="140" y="100" text-anchor="middle" font-family="Arial" font-size="14" fill="#0f172a">Step 1</text>
+  <text x="140" y="120" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">Install</text>
+
+  <rect x="370" y="70" width="160" height="70" rx="12" fill="#dcfce7" stroke="#15803d" stroke-width="2" />
+  <text x="450" y="100" text-anchor="middle" font-family="Arial" font-size="14" fill="#0f172a">Step 2</text>
+  <text x="450" y="120" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">Configure</text>
+
+  <rect x="680" y="70" width="160" height="70" rx="12" fill="#fef3c7" stroke="#b45309" stroke-width="2" />
+  <text x="760" y="100" text-anchor="middle" font-family="Arial" font-size="14" fill="#0f172a">Step 3</text>
+  <text x="760" y="120" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">Verify</text>
+
+  <line x1="220" y1="105" x2="370" y2="105" stroke="#0f172a" stroke-width="2" />
+  <polygon points="370,105 360,100 360,110" fill="#0f172a" />
+  <line x1="530" y1="105" x2="680" y2="105" stroke="#0f172a" stroke-width="2" />
+  <polygon points="680,105 670,100 670,110" fill="#0f172a" />
+</svg>

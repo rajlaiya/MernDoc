@@ -193,7 +193,6 @@ const pages = [
     label: 'Home',
     title: 'Welcome to MernDoc',
     element: <HomePage />,
-    sidebarMode: 'button-docs',
     docs: [
       {
         id: 'home-overview',
@@ -234,7 +233,6 @@ const pages = [
     label: 'CSS',
     title: 'CSS Practical Guide',
     element: <CssPage />,
-    sidebarMode: 'button-docs',
     docs: [
       {
         id: 'css-font-size-property',
@@ -399,7 +397,6 @@ const pages = [
     label: 'React JS',
     title: 'React JS Page',
     element: <ReactJsPage />,
-    sidebarMode: 'button-docs',
     docs: [
       {
         id: 'create-react-web',
@@ -609,7 +606,6 @@ const pages = [
     label: 'Next JS',
     title: 'Next JS Page',
     element: <NextJsPage />,
-    sidebarMode: 'button-docs',
     docs: [
       {
         id: 'create-next-web',
@@ -698,7 +694,6 @@ const pages = [
     label: 'Vue',
     title: 'Vue Page',
     element: <VuePage />,
-    sidebarMode: 'button-docs',
     docs: [
       {
         id: 'create-vue-web',
@@ -788,7 +783,6 @@ const pages = [
     label: 'Backend',
     title: 'Backend Docs',
     element: <BackendPage />,
-    sidebarMode: 'button-docs',
     docs: [
       {
         id: 'backend-env-setup',
@@ -869,31 +863,114 @@ const pages = [
         },
       },
       {
+        id: 'backend-mongodb-compass',
+        label: 'MongoDB Compass',
+        document: {
+          title: 'MongoDB Compass Step-by-Step (Hinglish)',
+          intro:
+            'Compass se aap apne MongoDB data ko visual tareeke se dekh sakte ho. Ye steps beginner ke liye one-by-one hai.',
+          steps: [
+            'MongoDB Compass install karo (official site se).',
+            'Atlas me cluster open karo > Connect > Compass select karo.',
+            'Connection string copy karo aur <password> ko apne DB user password se replace karo.',
+            'Compass open karke New Connection me URI paste karo.',
+            'Connect button press karo, databases list check karo.',
+            'Create Database se naya DB + collection banao.',
+            'Backend se data insert karo, phir Compass me refresh karke verify karo.',
+          ],
+          commands: [
+            'Example URI\nmongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority',
+            'Tip: <password> ko remove karke apna real password paste karo',
+          ],
+          images: [
+            {
+              src: '/images/compass-steps.svg',
+              alt: 'MongoDB Compass connection steps',
+              caption: 'Install, URI paste, connect, and verify data.'
+            },
+          ],
+          promptLines: [
+            'Network Access me 0.0.0.0/0 allow karo agar local se connect karna hai.',
+            'Wrong username ya password se authentication failed error aata hai.',
+            'Data tabhi dikhega jab backend MongoDB me write karega.',
+          ],
+        },
+      },
+      {
         id: 'backend-connect-frontend',
         label: 'Connect with Frontend',
         document: {
-          title: 'Connect Backend with React Frontend',
+          title: 'React Frontend ko Backend + MongoDB se Connect karo',
           intro:
-            'Backend ko React se connect karne ke liye API base URL, CORS, aur fetch/axios ka basic flow set karo.',
+            'Ye guide beginner ke liye full flow cover karta hai: install steps, code changes, env setup, aur testing.',
           steps: [
-            'Backend me CORS allow karo taki React dev server se request ja sake.',
-            'React app me API base URL set karo (Vite env prefer karo).',
-            'Pehle simple GET se connection test karo.',
-            'POST/DELETE/PATCH call same base URL follow karte hain.',
-            'Production me base URL ko env se replace karo.',
+            'Backend folder me npm init -y run karo.',
+            'Backend packages install karo: express, mongoose, cors, dotenv.',
+            'Folder structure banao: src, src/db, src/models, src/routes.',
+            'Backend .env me MONGO_URI aur PORT set karo.',
+            'db.js me mongoose.connect use karke MongoDB connect karo.',
+            'note.model.js me schema define karo (title, description).',
+            'note.routes.js me GET + POST routes banao.',
+            'app.js me express.json() aur cors() add karo, routes mount karo.',
+            'server.js me connectDB() call karo, phir app.listen start karo.',
+            'API ko Postman ya curl se test karo (GET/POST).',
+            'Frontend me axios install karo (ya fetch use karo).',
+            'Frontend .env me VITE_API_URL set karo.',
+            'React se GET request karo aur UI me data show karo.',
+            'POST request se data insert karo aur Compass me verify karo.',
           ],
           commands: [
-            'Backend: npm i cors',
-            'app.js\nconst cors = require("cors");\napp.use(cors());',
-            'Frontend (Vite) .env\nVITE_API_URL=http://localhost:3000',
-            'React fetch\nfetch(`${import.meta.env.VITE_API_URL}/notes`)\n  .then((res) => res.json())\n  .then((data) => console.log(data));',
-            'POST example\nfetch(`${import.meta.env.VITE_API_URL}/notes`, {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify({ title: "Test", description: "Demo" }),\n});',
+            'Backend install\nnpm i express mongoose cors dotenv\nnpm i -D nodemon',
+            'Folders\nmkdir src\nmkdir src/db\nmkdir src/models\nmkdir src/routes',
+            'Backend .env\nMONGO_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/mydb\nPORT=3000',
+            'Run backend\nnpx nodemon server.js',
+            'Frontend install\nnpm i axios',
+            'Frontend .env\nVITE_API_URL=http://localhost:3000',
+            'Quick test\ncurl http://localhost:3000/notes',
+          ],
+          images: [
+            {
+              src: '/images/connect-flow.svg',
+              alt: 'React frontend to API to MongoDB flow',
+              caption: 'React talks to API, API reads and writes MongoDB. Compass is used to verify data.'
+            },
+          ],
+          fileSnippets: [
+            {
+              title: 'src/db/db.js',
+              code:
+                'const mongoose = require("mongoose");\n\nasync function connectDB() {\n  await mongoose.connect(process.env.MONGO_URI);\n  console.log("DB connected");\n}\n\nmodule.exports = connectDB;\n',
+            },
+            {
+              title: 'src/models/note.model.js',
+              code:
+                'const mongoose = require("mongoose");\n\nconst noteSchema = new mongoose.Schema({\n  title: { type: String, required: true },\n  description: { type: String, required: true },\n});\n\nmodule.exports = mongoose.model("note", noteSchema);\n',
+            },
+            {
+              title: 'src/routes/note.routes.js',
+              code:
+                'const express = require("express");\nconst Note = require("../models/note.model");\n\nconst router = express.Router();\n\nrouter.get("/notes", async (req, res) => {\n  const notes = await Note.find();\n  res.json(notes);\n});\n\nrouter.post("/notes", async (req, res) => {\n  const note = await Note.create(req.body);\n  res.status(201).json(note);\n});\n\nmodule.exports = router;\n',
+            },
+            {
+              title: 'src/app.js',
+              code:
+                'const express = require("express");\nconst cors = require("cors");\nconst noteRoutes = require("./routes/note.routes");\n\nconst app = express();\napp.use(cors());\napp.use(express.json());\napp.use(noteRoutes);\n\nmodule.exports = app;\n',
+            },
+            {
+              title: 'server.js',
+              code:
+                'const app = require("./src/app");\nconst connectDB = require("./src/db/db");\n\nconnectDB();\n\nconst port = process.env.PORT || 3000;\napp.listen(port, () => {\n  console.log(`Server running on ${port}`);\n});\n',
+            },
+            {
+              title: 'src/api/notes.js (React)',
+              code:
+                'import axios from "axios";\n\nconst api = axios.create({\n  baseURL: import.meta.env.VITE_API_URL,\n});\n\nexport const fetchNotes = () => api.get("/notes");\nexport const createNote = (payload) => api.post("/notes", payload);\n',
+            },
           ],
           promptLines: [
-            'Connect the React client to the API using a single base URL for all requests.',
-            'Enable CORS on the backend to allow browser requests from the frontend.',
-            'Validate connectivity with a simple GET call before adding complex flows.',
-            'Keep API endpoints configurable through environment variables.',
+            'Same base URL use karo taki endpoints easily switch ho sakein.',
+            'CORS sirf local dev me allow karo; production me origin limit karo.',
+            'Compass me data refresh karke verify karo ki insert successful hua.',
           ],
         },
       },
@@ -1112,9 +1189,39 @@ const DocumentViewer = ({ document, pageLabel }) => {
     }
   }
 
+  const resolveImageSrc = (src) => {
+    if (!src) {
+      return src
+    }
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
+      return src
+    }
+    const base = import.meta.env.BASE_URL ?? '/'
+    const normalized = src.startsWith('/') ? src.slice(1) : src
+    return `${base}${normalized}`
+  }
+
   if (!document) {
     return null
   }
+
+  const fallbackImages = [
+    {
+      src: '/images/steps-flow.svg',
+      alt: 'Step by step flow',
+      caption: 'Follow the steps one by one for a clean setup.',
+    },
+    {
+      src: '/images/doc-layout.svg',
+      alt: 'Doc layout overview',
+      caption: 'Read, run commands, and verify output.',
+    },
+  ]
+  const images = document.images?.length
+    ? document.images.length >= 2
+      ? document.images
+      : [...document.images, ...fallbackImages].slice(0, 2)
+    : fallbackImages
 
   return (
     <article className="doc-viewer">
@@ -1130,6 +1237,19 @@ const DocumentViewer = ({ document, pageLabel }) => {
             {document.download.label}
           </a>
         </div>
+      ) : null}
+      {images?.length ? (
+        <>
+          <h3>Visual Guide</h3>
+          <div className="doc-image-grid">
+            {images.map((image) => (
+              <figure key={image.src} className="doc-image-card">
+                <img src={resolveImageSrc(image.src)} alt={image.alt} loading="lazy" />
+                {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+              </figure>
+            ))}
+          </div>
+        </>
       ) : null}
       {document.steps?.length ? (
         <>
@@ -1445,17 +1565,8 @@ const DocumentViewer = ({ document, pageLabel }) => {
   )
 }
 
-const PageShell = ({
-  title,
-  pageLabel,
-  sidebarMode,
-  docs,
-  activeDocId,
-  onSelectDoc,
-  children,
-}) => {
-  const activeDoc =
-    sidebarMode === 'button-docs' ? docs.find((doc) => doc.id === activeDocId) ?? docs[0] : null
+const PageShell = ({ title, pageLabel, docs, activeDocId, onSelectDoc, children }) => {
+  const activeDoc = docs.find((doc) => doc.id === activeDocId) ?? docs[0]
 
   return (
     <div className="layout">
@@ -1464,7 +1575,6 @@ const PageShell = ({
         <Sidebar
           pageLabel={pageLabel}
           docs={docs}
-          mode={sidebarMode}
           activeDocId={activeDoc?.id}
           onSelectDoc={onSelectDoc}
         />
@@ -1526,7 +1636,6 @@ const App = () => {
             <PageShell
               title={page.title}
               pageLabel={page.label}
-              sidebarMode={page.sidebarMode}
               docs={page.docs}
               activeDocId={activeDocs[page.path]}
               onSelectDoc={(docId) => handleDocSelect(page.path, docId)}

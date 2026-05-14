@@ -90,11 +90,6 @@ body {
   color: #f9fafb;
 }
 
-.sidebar-sections {
-  display: grid;
-  gap: 1rem;
-}
-
 .sidebar-actions {
   display: grid;
   gap: 0.6rem;
@@ -121,38 +116,6 @@ body {
   background: #164e63;
   border-color: #22d3ee;
   color: #ecfeff;
-}
-
-.doc-section {
-  border: 1px solid #1f2937;
-  border-radius: 0.55rem;
-  padding: 0.75rem;
-  background: rgba(2, 6, 23, 0.4);
-}
-
-.doc-section h3 {
-  margin: 0 0 0.6rem;
-  color: #e2e8f0;
-  font-size: 0.95rem;
-}
-
-.doc-links {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.4rem;
-}
-
-.doc-link {
-  color: var(--sidebar-text);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.doc-link:hover {
-  color: var(--sidebar-active);
-  text-decoration: underline;
 }
 
 .content-area {
@@ -217,6 +180,36 @@ body {
 
 .doc-download-btn:hover {
   background: #0284c7;
+}
+
+.doc-image-grid {
+  margin: 0.5rem 0 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.doc-image-card {
+  margin: 0;
+  border: 1px solid #bae6fd;
+  background: #f8fafc;
+  border-radius: 0.65rem;
+  padding: 0.6rem;
+}
+
+.doc-image-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.45rem;
+  background: #ffffff;
+}
+
+.doc-image-card figcaption {
+  margin-top: 0.4rem;
+  color: #334155;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .doc-viewer ol {
