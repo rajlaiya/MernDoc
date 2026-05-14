@@ -1,9 +1,13 @@
 import { NavLink } from 'react-router-dom'
+import logo from '../assets/LOGO1.png'
 
 const Navbar = ({ pages }) => {
   return (
     <header className="topbar">
-      <div className="brand">MernDoc</div>
+      <div className="brand">
+        <img src={logo} alt="MernDoc logo" className="brand-logo" />
+        <span>MernDoc</span>
+      </div>
       <nav>
         <ul className="route-links">
           {pages.map((page) => (

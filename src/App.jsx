@@ -1159,6 +1159,7 @@ const setMetaContent = (selector, content) => {
 const DocumentViewer = ({ document, pageLabel }) => {
   const [copiedExtension, setCopiedExtension] = useState('')
   const [copiedCode, setCopiedCode] = useState('')
+  const [activeImage, setActiveImage] = useState(null)
 
   const extensionThemeClass =
     pageLabel === 'Vue'
@@ -1201,27 +1202,134 @@ const DocumentViewer = ({ document, pageLabel }) => {
     return `${base}${normalized}`
   }
 
+  const sanitizeText = (value, maxLength = 30) => {
+    if (!value) {
+      return ''
+    }
+    const cleaned = String(value).replace(/[^a-zA-Z0-9 .,&/()_-]/g, '')
+    if (cleaned.length <= maxLength) {
+      return cleaned
+    }
+    return `${cleaned.slice(0, Math.max(0, maxLength - 3))}...`
+  }
+
+  const hashString = (value) => {
+    let hash = 0
+    const text = String(value ?? '')
+    for (let index = 0; index < text.length; index += 1) {
+      hash = (hash << 5) - hash + text.charCodeAt(index)
+      hash |= 0
+    }
+    return Math.abs(hash)
+  }
+
+  const themePalette = [
+    { bg: '#eef2ff', card: '#dbeafe', accent: '#1d4ed8', stroke: '#93c5fd' },
+    { bg: '#ecfeff', card: '#cffafe', accent: '#0e7490', stroke: '#67e8f9' },
+    { bg: '#f0fdf4', card: '#dcfce7', accent: '#15803d', stroke: '#86efac' },
+    { bg: '#fff7ed', card: '#ffedd5', accent: '#c2410c', stroke: '#fdba74' },
+    { bg: '#f8fafc', card: '#e2e8f0', accent: '#334155', stroke: '#94a3b8' },
+    { bg: '#fef9c3', card: '#fde68a', accent: '#a16207', stroke: '#facc15' },
+  ]
+
+  const getTheme = (key) => themePalette[hashString(key) % themePalette.length]
+
+  const createSvgDataUri = (svg) => {
+    const cleaned = svg.trim().replace(/\s{2,}/g, ' ')
+    const encoded = globalThis.btoa(unescape(encodeURIComponent(cleaned)))
+    return `data:image/svg+xml;base64,${encoded}`
+  }
+
+  const buildFlowDiagram = ({ title, steps, theme }) => {
+    const safeTitle = sanitizeText(title, 32)
+    const labels = steps.length
+      ? steps.map((item) => sanitizeText(item, 18))
+      : ['Setup', 'Code', 'Verify']
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240" role="img" aria-label="${safeTitle} flow">
+        <rect width="900" height="240" fill="${theme.bg}" />
+        <text x="450" y="34" text-anchor="middle" font-family="Arial" font-size="16" fill="${theme.accent}">${safeTitle}</text>
+        <rect x="70" y="80" width="200" height="90" rx="12" fill="${theme.card}" stroke="${theme.stroke}" stroke-width="2" />
+        <rect x="350" y="80" width="200" height="90" rx="12" fill="${theme.card}" stroke="${theme.stroke}" stroke-width="2" />
+        <rect x="630" y="80" width="200" height="90" rx="12" fill="${theme.card}" stroke="${theme.stroke}" stroke-width="2" />
+        <text x="170" y="120" text-anchor="middle" font-family="Arial" font-size="13" fill="#0f172a">${labels[0] ?? 'Step 1'}</text>
+        <text x="450" y="120" text-anchor="middle" font-family="Arial" font-size="13" fill="#0f172a">${labels[1] ?? 'Step 2'}</text>
+        <text x="730" y="120" text-anchor="middle" font-family="Arial" font-size="13" fill="#0f172a">${labels[2] ?? 'Step 3'}</text>
+        <line x1="270" y1="125" x2="350" y2="125" stroke="#0f172a" stroke-width="2" />
+        <polygon points="350,125 340,120 340,130" fill="#0f172a" />
+        <line x1="550" y1="125" x2="630" y2="125" stroke="#0f172a" stroke-width="2" />
+        <polygon points="630,125 620,120 620,130" fill="#0f172a" />
+      </svg>
+    `
+  }
+
+  const placeholderImage = createSvgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240" role="img" aria-label="Image failed to load">
+      <rect width="900" height="240" fill="#f8fafc" />
+      <rect x="120" y="70" width="660" height="100" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2" />
+      <text x="450" y="125" text-anchor="middle" font-family="Arial" font-size="16" fill="#991b1b">Image failed to load</text>
+    </svg>
+  `)
+
+  const buildChecklistDiagram = ({ title, items, theme }) => {
+    const safeTitle = sanitizeText(title, 32)
+    const safeItems = items.length
+      ? items.map((item) => sanitizeText(item, 24))
+      : ['Follow steps', 'Run commands', 'Check output']
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240" role="img" aria-label="${safeTitle} checklist">
+        <rect width="900" height="240" fill="${theme.bg}" />
+        <text x="450" y="34" text-anchor="middle" font-family="Arial" font-size="16" fill="${theme.accent}">${safeTitle}</text>
+        <rect x="120" y="70" width="660" height="130" rx="14" fill="#ffffff" stroke="${theme.stroke}" stroke-width="2" />
+        <rect x="150" y="95" width="16" height="16" rx="3" fill="${theme.card}" stroke="${theme.accent}" stroke-width="1" />
+        <rect x="150" y="125" width="16" height="16" rx="3" fill="${theme.card}" stroke="${theme.accent}" stroke-width="1" />
+        <rect x="150" y="155" width="16" height="16" rx="3" fill="${theme.card}" stroke="${theme.accent}" stroke-width="1" />
+        <text x="180" y="108" font-family="Arial" font-size="13" fill="#0f172a">${safeItems[0] ?? 'Step'}</text>
+        <text x="180" y="138" font-family="Arial" font-size="13" fill="#0f172a">${safeItems[1] ?? 'Step'}</text>
+        <text x="180" y="168" font-family="Arial" font-size="13" fill="#0f172a">${safeItems[2] ?? 'Step'}</text>
+      </svg>
+    `
+  }
+
+  const openImage = (image) => {
+    setActiveImage({
+      src: resolveImageSrc(image.src),
+      alt: image.alt,
+      caption: image.caption,
+    })
+  }
+
+  const closeImage = () => {
+    setActiveImage(null)
+  }
+
   if (!document) {
     return null
   }
 
-  const fallbackImages = [
-    {
-      src: '/images/steps-flow.svg',
-      alt: 'Step by step flow',
-      caption: 'Follow the steps one by one for a clean setup.',
-    },
-    {
-      src: '/images/doc-layout.svg',
-      alt: 'Doc layout overview',
-      caption: 'Read, run commands, and verify output.',
-    },
-  ]
+  const buildAutoImages = (doc) => {
+    const theme = getTheme(doc.id ?? doc.title)
+    const title = sanitizeText(doc.title ?? 'Doc Guide', 32)
+    const stepLabels = (doc.steps ?? []).slice(0, 3)
+    const keyItems = (doc.commands ?? []).slice(0, 3)
+    return [
+      {
+        src: createSvgDataUri(buildFlowDiagram({ title, steps: stepLabels, theme })),
+        alt: `${title} flow diagram`,
+        caption: 'Step flow based on this section.',
+      },
+      {
+        src: createSvgDataUri(buildChecklistDiagram({ title, items: keyItems, theme })),
+        alt: `${title} checklist diagram`,
+        caption: 'Quick checklist derived from this section.',
+      },
+    ]
+  }
+
+  const autoImages = buildAutoImages(document)
   const images = document.images?.length
-    ? document.images.length >= 2
-      ? document.images
-      : [...document.images, ...fallbackImages].slice(0, 2)
-    : fallbackImages
+    ? [...document.images, ...autoImages].slice(0, 2)
+    : autoImages
 
   return (
     <article className="doc-viewer">
@@ -1244,7 +1352,19 @@ const DocumentViewer = ({ document, pageLabel }) => {
           <div className="doc-image-grid">
             {images.map((image) => (
               <figure key={image.src} className="doc-image-card">
-                <img src={resolveImageSrc(image.src)} alt={image.alt} loading="lazy" />
+                <img
+                  src={resolveImageSrc(image.src)}
+                  alt={image.alt}
+                  loading="lazy"
+                  onClick={() => openImage(image)}
+                  onError={(event) => {
+                    const target = event.currentTarget
+                    if (!target.dataset.fallback) {
+                      target.dataset.fallback = '1'
+                      target.src = placeholderImage
+                    }
+                  }}
+                />
                 {image.caption ? <figcaption>{image.caption}</figcaption> : null}
               </figure>
             ))}
@@ -1560,6 +1680,19 @@ const DocumentViewer = ({ document, pageLabel }) => {
             </table>
           </div>
         </>
+      ) : null}
+      {activeImage ? (
+        <div className="image-overlay" onClick={closeImage} role="presentation">
+          <div className="image-modal" onClick={(event) => event.stopPropagation()}>
+            <img src={activeImage.src} alt={activeImage.alt} />
+            {activeImage.caption ? (
+              <p className="image-caption">{activeImage.caption}</p>
+            ) : null}
+            <button type="button" className="image-close-btn" onClick={closeImage}>
+              Close
+            </button>
+          </div>
+        </div>
       ) : null}
     </article>
   )
